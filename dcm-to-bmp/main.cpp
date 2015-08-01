@@ -23,8 +23,27 @@ vector <IplImage*> img3d;
 vector <float> indexZ;
 int total_de_imagens;
 
-vector<string> Carregar_Diretorios(string path, string fileExt)
-{
+/// -------------------------- FUNÇÕES --------------------------------
+vector<string> Carregar_Diretorios(string path, string fileExt);
+void ajustar_imagem_para_8_bits(IplImage* imagem , IplImage* imagem_dst , int level, int width);
+void add2DImgFromArray(int* img, int width, int height);
+void CarregarImagens(string local , string extencao);
+void mostra_dicom (IplImage* imagem, int id, string local);
+
+int main(){
+    string dir("/home/walisson/Documentos/PROGRAMAS QT/dcm_to_jpg/zz/");
+    CarregarImagens("/home/walisson/Documentos/PROGRAMAS QT/dcm_to_jpg/zz/", "dcm");
+
+    for(int i = 0; i < total_de_imagens; i++){
+        mostra_dicom(img3d[i], i, dir + "save/");
+    }
+
+    cvWaitKey(0);
+
+    return 0;
+}
+
+vector<string> Carregar_Diretorios(string path, string fileExt){
     vector<std::string> filenames;
 
     QDirIterator dirIt(path.c_str(),QDirIterator::Subdirectories);
@@ -39,40 +58,7 @@ vector<string> Carregar_Diretorios(string path, string fileExt)
     return filenames;
 }
 
-/*
-vector<string> Carregar_Diretorios(string diretorio, string extensao)
-{
-    vector <string> vetor_diretorios_imagens_dcom;
-    char* filename;
-
-    WIN32_FIND_DATA FindData;
-    HANDLE hFind;
-
-    char directory[512];
-    char finalDir[512];
-    sprintf(directory, "%s", diretorio.c_str());
-
-    strcat(directory, "*.");
-    strcat(directory, extensao.c_str());
-
-    hFind = FindFirstFile(directory, &FindData);
-    filename = FindData.cFileName;
-    sprintf(finalDir, "%s%s", diretorio.c_str(), filename);
-    vetor_diretorios_imagens_dcom.push_back(finalDir);
-
-    while (FindNextFile(hFind, &FindData))
-    {
-        filename = FindData.cFileName;
-
-        sprintf(finalDir, "%s%s", diretorio.c_str(), filename);
-        vetor_diretorios_imagens_dcom.push_back(finalDir);
-    }
-
-    return vetor_diretorios_imagens_dcom ;
-}
-*/
-void ajustar_imagem_para_8_bits(IplImage* imagem , IplImage* imagem_dst , int level, int width)
-{
+void ajustar_imagem_para_8_bits(IplImage* imagem , IplImage* imagem_dst , int level, int width){
     int i, pix;
     for(i = 0; i < imagem->width * imagem->height; i++)
     {
@@ -126,12 +112,6 @@ void CarregarImagens(string local , string extencao){
     printf("\n");
 }
 
-void salvarImagens(int id, IplImage* imagem, String local, String extencao) {
-    char arquivo[512];
-    sprintf(arquivo, "%s%s%d%s", local.c_str(), "imagem", id, extencao.c_str());
-    cvSaveImage(arquivo, imagem);
-}
-
 void mostra_dicom (IplImage* imagem, int id, string local) {
     // Cria espaços de imagens vazias:
     IplImage* imagem_dcom_ajustada_8_bits = cvCreateImage(cvGetSize(imagem), 8, 3);
@@ -153,31 +133,4 @@ void mostra_dicom (IplImage* imagem, int id, string local) {
     sprintf(arquivo, "%s%s%d%s", local.c_str(), "imagem", id, ".bmp");
     cvSaveImage(arquivo, imagem_gray);
     cvWaitKey(0);
-}
-
-int main(){
-    string dir("/home/walisson/Documentos/PROGRAMAS QT/dcm_to_jpg/zz/");
-    CarregarImagens("/home/walisson/Documentos/PROGRAMAS QT/dcm_to_jpg/zz/", "dcm");
-
-    /*IplImage* img;
-    img = cvLoadImage( "C:\\img\\cer.jpg", CV_LOAD_IMAGE_COLOR);
-
-    if (!img)
-    {
-        cout<<"Nao foi possivel abrir a imagem\n";
-        system("pause");
-        return -1;
-    }*/
-
-    for(int i = 0; i < total_de_imagens; i++){
-        mostra_dicom(img3d[i], i, dir + "save/");
-        //salvarImagens(i, img3d[i], "/home/walisson/Documentos/PROGRAMAS QT/dcm_to_jpg/zz/save/", ".bmp");
-    }
-
-    cout << "Pronto!\n";
-
-    cvWaitKey(0);
-    //system("pause");
-
-    return 1;
 }
