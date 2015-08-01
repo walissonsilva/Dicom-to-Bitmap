@@ -34,12 +34,9 @@ INCLUDEPATH += /usr/local/include/dcmtk/config/
 LIBS += -L/usr/local/lib/ -ldcmnet -ldcmdata -loflog -lofstd
 
 SOURCES += main.cpp \
-    MedicalImage.cpp \
     MedicalImage.cpp
 DEFINES += HAVE_CONFIG_H
 DEFINES += USE_NULL_SAFE_OFSTRING
-
-SOURCES += main.cpp
 
 HEADERS += \
     MedicalImage.h
